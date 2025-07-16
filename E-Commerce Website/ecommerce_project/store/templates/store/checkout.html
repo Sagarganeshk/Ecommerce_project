@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Placed</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .success-box {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 30px;
+            margin: 0 auto;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .success-box h2 {
+            margin-bottom: 15px;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .back-home:hover {
+            background-color: #084ec4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-box">
+        <h2>✅ Thank you for your order!</h2>
+        <p>Your cart has been cleared and order was placed successfully.</p>
+        <p><strong>Total Paid:</strong> ₹{{ total_paid }}</p>
+        <a class="back-home" href="{% url 'store_home' %}">⬅ Continue Shopping</a>
+    </div>
+
+</body>
+</html>

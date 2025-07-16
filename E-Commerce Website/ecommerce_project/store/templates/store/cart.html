@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .cart-container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 12px 0;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .product-img {
+            flex: 0 0 60px;
+            margin-right: 15px;
+        }
+        .product-img img {
+            height: 50px;
+            width: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .item-name {
+            flex: 2;
+            font-weight: bold;
+        }
+        .item-info {
+            flex: 2;
+            text-align: right;
+        }
+        .item-info span {
+            display: block;
+            margin-top: 6px;
+        }
+        form {
+            display: inline;
+        }
+        button {
+            padding: 6px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #bb2d3b;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 4px;
+            margin-right: 5px;
+        }
+        .total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .checkout-btn {
+            text-align: right;
+            margin-top: 15px;
+        }
+        .checkout-btn button {
+            background-color: #198754;
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+        .empty {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+        .back-link {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Shopping Cart</h1>
+    <div class="cart-container">
+
+    {% if cart_items %}
+        {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="product-img">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    {% endif %}
+                </div>
+
+                <div class="item-name">
+                    {{ item.product.name }}
+                </div>
+
+                <div class="item-info">
+                    <form method="POST" action="{% url 'update_quantity' item.product.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" />
+                        <button type="submit">Update</button>
+                    </form>
+                    <span>₹{{ item.product.price }} × {{ item.quantity }} = ₹{{ item.subtotal }}</span>
+
+                    <form method="POST" action="{% url 'remove_from_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Remove</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="total">Total: ₹{{ total }}</div>
+
+        <div class="checkout-btn">
+            <form method="POST" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                <button type="submit">✅ Checkout</button>
+            </form>
+        </div>
+
+    {% else %}
+        <p class="empty">Your cart is empty</p>
+    {% endif %}
+
+    <a href="{% url 'store_home' %}" class="back-link">⬅ Back to Store</a>
+    </div>
+</body>
+</html>

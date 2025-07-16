@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Store</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .filter-bar {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .filter-bar select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .store-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .product {
+            background: whitesmoke;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 600px;
+            margin: 10px;
+            padding: 15px;
+            display: flex;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product img {
+            width: 200px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+
+        .product-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-details h3 {
+            margin: 0 0 8px;
+        }
+
+        .product-details h3 a {
+            text-decoration: none;
+            color: #0d6efd;
+        }
+
+        .product-details h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .product-details p {
+            color: #0e0707;
+            margin: 0 0 8px;
+        }
+
+        .price-section {
+            margin: 6px 0 12px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #888;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .discounted-price {
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+            transform: translate(-1px);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        a.view-cart {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: black;
+            background: #ffc107;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🛍 Welcome to My Store</h1>
+        <a class="view-cart" href="{% url 'view_cart' %}">🛒 View Cart</a>
+    </header>
+
+    <!-- Category Filter Dropdown -->
+    <div class="filter-bar">
+        <form method="GET">
+            <label for="category"><strong>Filter by Category:</strong></label>
+            <select name="category" onchange="this.form.submit()">
+                <option value="">All</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="store-container">
+        {% for product in products %}
+        <div class="product">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+            <div class="product-details">
+                <h3><a href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+                <p>{{ product.description }}</p>
+
+                <div class="price-section">
+                    <span class="original-price">₹{{ product.original_price }}</span>
+                    <span class="discounted-price">₹{{ product.price }}</span>
+                </div>
+
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
